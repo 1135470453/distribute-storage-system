@@ -1,4 +1,4 @@
-package putStream
+package objectStream
 
 import (
 	"fmt"
@@ -35,7 +35,7 @@ func NewPutStream(server, object string) *PutStream {
 }
 
 //向dataserver发送数据
-func (w *PutStream) Writer(p []byte) (n int, err error) {
+func (w *PutStream) Write(p []byte) (n int, err error) {
 	return w.writer.Write(p)
 }
 

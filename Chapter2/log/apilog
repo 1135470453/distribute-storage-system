@@ -1,0 +1,5 @@
+2022/04/20 14:02:30 dataServer get a put
+2022/04/20 14:02:30 dataserver : put
+2022/04/20 14:02:30 open /objects/test2: no such file or directory
+2022/04/20 14:09:20 dataServer get a get
+2022/04/20 14:09:20 open /objects/test: no such file or directory
