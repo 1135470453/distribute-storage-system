@@ -98,7 +98,8 @@ func PutMetadata(name string, version int, size int64, hash string) error {
 		os.Getenv("ES_SERVER"), name, version)
 	log.Println("PutMetadata start put")
 	//这里应该改为post
-	request, _ := http.NewRequest("PUT", url, strings.NewReader(doc))
+	request, _ := http.NewRequest("POST", url, strings.NewReader(doc))
+	request.Header.Set("Content-Type", "application/json")
 	r, e := client.Do(request)
 	if e != nil {
 		return e
@@ -129,7 +130,7 @@ func AddVersion(name, hash string, size int64) error {
 //from size用于分页
 func SearchAllVersions(name string, from, size int) ([]Metadata, error) {
 	log.Println("SearchAllVersions start")
-	url := fmt.Sprintf("http://%s/metadata/_search?sort=name,version&from=%d&size=%d",
+	url := fmt.Sprintf("http://%s/metadata/_search?sort=name.keyword,version&from=%d&size=%d",
 		os.Getenv("ES_SERVER"), from, size)
 	if name != "" {
 		url += "&q=name:" + name

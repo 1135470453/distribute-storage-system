@@ -12,10 +12,14 @@ POST IP:9200/metadata/objects
 	"mappings":{
 		"objects":{
 			"properties":{
-				"name":{
-					"type":"string",
-					"index":"not analyzed"
-				},
+                "name": {
+                    "type": "text",
+                    "fields": {
+                      "keyword": {
+                        "type": "keyword"
+                      }
+                    }
+                  },
 				"version":{
 					"type":"integer"
 				},
@@ -40,10 +44,39 @@ sudo rabbitmq-plugins enable rabbitmq_management
 ```shell
 export ES_SERVER=101.43.155.248:9200
 ```
+##### 获取散列值
+```shell
+echo -n "this is a dss2" | openssl dgst -sha256 -binary |base64
+```
+hash: `2oUvHeq7jQ27Va2y/usI1kSX4cETY9LuevZU9RT+Fuc=`
+
+```shell
+echo -n "this is test4" | openssl dgst -sha256 -binary |base64
+```
+
+hash: `Os/0OGFkYdCb4HxMk0iubLSAJeXOe4S1Vt/6bbNIFuU=`
+##### 上传文件
+```shell
+curl -v 10.0.2.2:8082/objects/dss -XPUT -d"this is a dss2" -H "Digest: SHA-256=bbngvhe+gd7WyYx67MTg/sAntIWhB4OvuEdw5eRazaE="
+```
+
+#### 查看文件位置
+```shell
+curl 10.0.24.11:8082/locate/K7qv1Doqv%2F2vfwjQOmbWYBmQ6UkOUaB7w%2FHW2XUC8YA=
+```
+
+##### 添加数据
+POST http://101.43.155.248:9200/metadata/objects/test3_1?op_type=create
+```json
+{
+  "name":"test3",
+  "version":1,
+  "size":13,
+  "hash":"2oUvHeq7jQ27Va2y/usI1kSX4cETY9LuevZU9RT+Fuc="
+}
+```
 
 现存问题：
-es.go 101应该改为post，否则增加新数据的时候报错
 
-Content-Type header [] is not supported
 
 如果文件在之前没有，则会报错，无法按照version排序
