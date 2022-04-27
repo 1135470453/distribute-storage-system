@@ -1,6 +1,9 @@
-package hashutils
+package headutils
 
 import (
+	"crypto/sha256"
+	"encoding/base64"
+	"io"
 	"log"
 	"net/http"
 	"strconv"
@@ -27,4 +30,14 @@ func GetSizeFromHeader(h http.Header) int64 {
 	log.Printf("size is %d", size)
 	log.Println("GetSizeFromHeader end")
 	return size
+}
+
+// CalculateHash 计算hash值
+func CalculateHash(r io.Reader) string {
+	log.Println("CalculateHash start")
+	h := sha256.New()
+	io.Copy(h, r)
+	//h.Sum获取散列值
+	//base64.StdEncoding.EncodeToString进行base64编码
+	return base64.StdEncoding.EncodeToString(h.Sum(nil))
 }
