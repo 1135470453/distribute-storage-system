@@ -2,9 +2,12 @@ package temp
 
 import (
 	"distributed_storage_system/Chapter2/dataServer/locate"
+	"distributed_storage_system/utils/headutils"
 	"log"
 	"net/http"
+	"net/url"
 	"os"
+	"strconv"
 	"strings"
 )
 
@@ -45,9 +48,21 @@ func put(w http.ResponseWriter, r *http.Request) {
 	log.Println("put end")
 }
 
+func (t *tempInfo) hash() string {
+	s := strings.Split(t.Name, ".")
+	return s[0]
+}
+
+func (t *tempInfo) id() int {
+	s := strings.Split(t.Name, ".")
+	id, _ := strconv.Atoi(s[1])
+	return id
+}
+
 func commitTempObject(datFile string, tempinfo *tempInfo) {
-	log.Println("commitTempObject start")
-	os.Rename(datFile, os.Getenv("STORAGE_ROOT")+"/objects/"+tempinfo.Name)
-	locate.Add(tempinfo.Name)
-	log.Println("commitTempObject end")
+	f, _ := os.Open(datFile)
+	d := url.PathEscape(headutils.CalculateHash(f))
+	f.Close()
+	os.Rename(datFile, os.Getenv("STORAGE_ROOT")+"/objects/"+tempinfo.Name+"."+d)
+	locate.Add(tempinfo.hash(), tempinfo.id())
 }

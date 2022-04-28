@@ -5,7 +5,7 @@ import (
 	"distributed_storage_system/Chapter2/apiServer/locate"
 	"distributed_storage_system/utils/elasticSearch"
 	"distributed_storage_system/utils/headutils"
-	"distributed_storage_system/utils/objectStream"
+	"distributed_storage_system/utils/rs"
 	"fmt"
 	"io"
 	"log"
@@ -75,13 +75,12 @@ func storeObject(r io.Reader, hash string, size int64) (int, error) {
 }
 
 //随机选择一个dataserver,并返回用于传数据的putStream
-func putStream(hash string, size int64) (*objectStream.TempPutStream, error) {
+func putStream(hash string, size int64) (*rs.RSPutStream, error) {
 	log.Println("apiServer start putStream")
-	server := heartbeat.ChooseRandomDataServer()
-	log.Println("server is " + server)
-	if server == "" {
-		return nil, fmt.Errorf("cannot find any dataServer")
+	servers := heartbeat.ChooseRandomDataServers(rs.ALL_SHARDS, nil)
+	if len(servers) != rs.ALL_SHARDS {
+		return nil, fmt.Errorf("cannot find enough dataServer")
 	}
 	log.Println("apiServer :putStream end!")
-	return objectStream.NewTempPutStream(server, hash, size)
+	return rs.NewRSPutStream(servers, hash, size)
 }

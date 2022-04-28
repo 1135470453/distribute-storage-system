@@ -1,13 +1,15 @@
 package objects
 
 import (
+	"crypto/sha256"
 	"distributed_storage_system/Chapter2/dataServer/locate"
-	"distributed_storage_system/utils/headutils"
+	"encoding/base64"
 	"io"
 	"log"
 	"net/http"
 	"net/url"
 	"os"
+	"path/filepath"
 	"strings"
 )
 
@@ -22,12 +24,17 @@ func get(w http.ResponseWriter, r *http.Request) {
 	log.Println("object get end")
 }
 
-func getFile(hash string) string {
+func getFile(name string) string {
 	log.Println("getFile start")
-	file := os.Getenv("STORAGE_ROOT") + "/objects/" + hash
-	f, _ := os.Open(file)
-	d := url.PathEscape(headutils.CalculateHash(f))
-	f.Close()
+	files, _ := filepath.Glob(os.Getenv("STORAGE_ROOT") + "/objects/" + name + ".*")
+	if len(files) != 1 {
+		return ""
+	}
+	file := files[0]
+	h := sha256.New()
+	sendFile(h, file)
+	d := url.PathEscape(base64.StdEncoding.EncodeToString(h.Sum(nil)))
+	hash := strings.Split(file, ".")[2]
 	if d != hash {
 		log.Println("object hash mismatch, remove", file)
 		locate.Del(hash)
@@ -37,7 +44,6 @@ func getFile(hash string) string {
 	log.Println("getFile end")
 	return file
 }
-
 func sendFile(w io.Writer, file string) {
 	log.Println("sendFile start")
 	f, _ := os.Open(file)

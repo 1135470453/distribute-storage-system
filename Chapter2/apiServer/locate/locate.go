@@ -2,13 +2,16 @@ package locate
 
 import (
 	"distributed_storage_system/utils/rabbitmq"
+	"distributed_storage_system/utils/rs"
+	"distributed_storage_system/utils/types"
+	"encoding/json"
+	"log"
 	"os"
-	"strconv"
 	"time"
 )
 
-// Locate 借助dataServers exchange来获取哪一个数据节点含有这个数据,并返回这个数据节点的地址
-func Locate(name string) string {
+func Locate(name string) (locateInfo map[int]string) {
+	log.Println("apiServer locate start")
 	q := rabbitmq.New(os.Getenv("RABBITMQ_SERVER"))
 	q.Publish("dataServers", name)
 	c := q.Consume()
@@ -16,12 +19,22 @@ func Locate(name string) string {
 		time.Sleep(time.Second)
 		q.Close()
 	}()
-	msg := <-c
-	s, _ := strconv.Unquote(string(msg.Body))
-	return s
+	//用于存储所有的分片,[分片id]:节点地址
+	locateInfo = make(map[int]string)
+	for i := 0; i < rs.ALL_SHARDS; i++ {
+		msg := <-c
+		if len(msg.Body) == 0 {
+			return
+		}
+		var info types.LocateMessage
+		json.Unmarshal(msg.Body, &info)
+		locateInfo[info.Id] = info.Addr
+	}
+	log.Println("apiServer locate end")
+	return
 }
 
-// Exist 判断是否存在这个文件,但是没有使用到
 func Exist(name string) bool {
-	return Locate(name) != ""
+	log.Println("apiServer exist start")
+	return len(Locate(name)) >= rs.DATA_SHARDS
 }

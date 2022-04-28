@@ -46,7 +46,7 @@ export ES_SERVER=101.43.155.248:9200
 ```
 ##### 获取散列值
 ```shell
-echo -n "this is test4,only have one" | openssl dgst -sha256 -binary |base64
+echo -n "this object will be separate to 4+2 shards" | openssl dgst -sha256 -binary |base64
 ```
 hash: `2oUvHeq7jQ27Va2y/usI1kSX4cETY9LuevZU9RT+Fuc=`
 
@@ -57,7 +57,7 @@ echo -n "this is test4" | openssl dgst -sha256 -binary |base64
 hash: `Os/0OGFkYdCb4HxMk0iubLSAJeXOe4S1Vt/6bbNIFuU=`
 ##### 上传文件
 ```shell
-curl -v 10.0.2.1:8082/objects/testFour -XPUT -d"this is test4,only have one" -H "Digest: SHA-256=54wHI2cmBI7uEbMSUB5S9WnhabLDRBUR4F6uVU0LX68="
+curl -v 10.0.2.1:8082/objects/test5 -XPUT -d"this object will be separate to 4+2 shards" -H "Digest: SHA-256=MBMxWHrPMsuOBaVYHkwScZQRyTRMQyiKp2oelpLZza8="
 ```
 
 #### 查看文件位置

@@ -13,6 +13,7 @@ type TempPutStream struct {
 	Uuid   string
 }
 
+//让dataServer建立临时文件,并返回对应的uuid
 func NewTempPutStream(server, object string, size int64) (*TempPutStream, error) {
 	log.Println("NewTempPutStream start")
 	//post方法访问数据服务的temp接口,获得uuid
