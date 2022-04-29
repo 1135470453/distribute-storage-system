@@ -8,6 +8,11 @@ import (
 func Handler(w http.ResponseWriter, r *http.Request) {
 	log.Println("apiServer get a handler")
 	m := r.Method
+	if m == http.MethodPost {
+		log.Println("apiServer get a post handler")
+		post(w, r)
+		return
+	}
 	if m == http.MethodPut {
 		log.Println("apiServer get a put handler")
 		put(w, r)

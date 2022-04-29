@@ -4,6 +4,7 @@ import (
 	"distributed_storage_system/Chapter2/apiServer/heartbeat"
 	"distributed_storage_system/Chapter2/apiServer/locate"
 	"distributed_storage_system/Chapter2/apiServer/objects"
+	"distributed_storage_system/Chapter2/apiServer/temp"
 	"distributed_storage_system/Chapter2/apiServer/versions"
 	"log"
 	"net/http"
@@ -17,6 +18,7 @@ func main() {
 	log.Println("apiserver start")
 	go heartbeat.ListenHeartbeat()
 	http.HandleFunc("/objects/", objects.Handler)
+	http.HandleFunc("/temp/", temp.Handler)
 	//查询文件所在的数据节点,返回数据节点的地址
 	http.HandleFunc("/locate/", locate.Handler)
 	http.HandleFunc("/versions/", versions.Handler)

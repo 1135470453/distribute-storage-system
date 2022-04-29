@@ -8,6 +8,14 @@ import (
 func Handler(w http.ResponseWriter, r *http.Request) {
 	log.Println("dataServer get a handler")
 	m := r.Method
+	if m == http.MethodHead {
+		head(w, r)
+		return
+	}
+	if m == http.MethodGet {
+		get(w, r)
+		return
+	}
 	if m == http.MethodPut {
 		log.Println("dataServer get a put")
 		put(w, r)

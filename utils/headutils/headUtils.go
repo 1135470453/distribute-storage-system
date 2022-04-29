@@ -7,6 +7,7 @@ import (
 	"log"
 	"net/http"
 	"strconv"
+	"strings"
 )
 
 //获取hash值
@@ -40,4 +41,17 @@ func CalculateHash(r io.Reader) string {
 	//h.Sum获取散列值
 	//base64.StdEncoding.EncodeToString进行base64编码
 	return base64.StdEncoding.EncodeToString(h.Sum(nil))
+}
+
+func GetOffsetFromHeader(h http.Header) int64 {
+	byteRange := h.Get("range")
+	if len(byteRange) < 7 {
+		return 0
+	}
+	if byteRange[:6] != "bytes=" {
+		return 0
+	}
+	bytePos := strings.Split(byteRange[6:], "-")
+	offset, _ := strconv.ParseInt(bytePos[0], 0, 64)
+	return offset
 }
