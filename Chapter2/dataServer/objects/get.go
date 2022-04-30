@@ -1,6 +1,7 @@
 package objects
 
 import (
+	"compress/gzip"
 	"crypto/sha256"
 	"distributed_storage_system/Chapter2/dataServer/locate"
 	"encoding/base64"
@@ -45,9 +46,17 @@ func getFile(name string) string {
 	return file
 }
 func sendFile(w io.Writer, file string) {
-	log.Println("sendFile start")
-	f, _ := os.Open(file)
+	f, e := os.Open(file)
+	if e != nil {
+		log.Println(e)
+		return
+	}
 	defer f.Close()
-	io.Copy(w, f)
-	log.Println("sendFile end")
+	gzipStream, e := gzip.NewReader(f)
+	if e != nil {
+		log.Println(e)
+		return
+	}
+	io.Copy(w, gzipStream)
+	gzipStream.Close()
 }
