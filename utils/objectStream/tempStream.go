@@ -13,10 +13,11 @@ type TempPutStream struct {
 	Uuid   string
 }
 
-//让dataServer建立临时文件,并返回对应的uuid
+//让dataServer创建存储文件基本信息的uuid文件,和用于缓存文件内容的uuid.dat文件,并返回TempPutStream格式的uuid和server
+//object格式: hash.分片号
 func NewTempPutStream(server, object string, size int64) (*TempPutStream, error) {
 	log.Println("NewTempPutStream start")
-	//post方法访问数据服务的temp接口,获得uuid
+	//创建存储文件基本信息的uuid文件,和用于缓存文件内容的uuid.dat文件,并返回uuid
 	request, e := http.NewRequest("POST", "http://"+server+"/temp/"+object, nil)
 	if e != nil {
 		return nil, e
@@ -27,6 +28,7 @@ func NewTempPutStream(server, object string, size int64) (*TempPutStream, error)
 	if e != nil {
 		return nil, e
 	}
+	//获取post返回的uuid
 	uuid, e := ioutil.ReadAll(response.Body)
 	if e != nil {
 		return nil, e
@@ -54,6 +56,7 @@ func (w *TempPutStream) Write(p []byte) (n int, err error) {
 	return len(p), nil
 }
 
+//true则将临时文件变为正式文件, false则删除临时文件
 func (w *TempPutStream) Commit(good bool) {
 	method := "DELETE"
 	if good {
@@ -64,6 +67,7 @@ func (w *TempPutStream) Commit(good bool) {
 	client.Do(request)
 }
 
+//从dataServer获取uuid对应的用于保存文件内容的临时文件内容
 func NewTempGetStream(server, uuid string) (*GetStream, error) {
 	return newGetSteam("http://" + server + "/temp/" + uuid)
 }

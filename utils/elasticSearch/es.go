@@ -52,7 +52,7 @@ func getMetadata(name string, versionId int) (meta Metadata, e error) {
 	return
 }
 
-//获取指定名字的最新版本
+//获取指定filename的最新版本
 func SearchLatestVersion(name string) (meta Metadata, e error) {
 	log.Println("SearchLatestVersion start")
 	//搜索指定名字,按照版本号降序排列并且只返回第一个(及得到该名字的最新版本)
@@ -80,6 +80,7 @@ func SearchLatestVersion(name string) (meta Metadata, e error) {
 	return
 }
 
+//查找对应version和filename的元数据,如果version=0,则查找filename的最新版本
 func GetMetadata(name string, version int) (Metadata, error) {
 	if version == 0 {
 		return SearchLatestVersion(name)
@@ -126,7 +127,7 @@ func AddVersion(name, hash string, size int64) error {
 	return PutMetadata(name, version.Version+1, size, hash)
 }
 
-//name不为空:搜这个name的所有版本, name为空,搜所有
+//name不为空:搜这个name的所有版本的元数据, name为空,搜所有元数据
 //from size用于分页
 func SearchAllVersions(name string, from, size int) ([]Metadata, error) {
 	log.Println("SearchAllVersions start")

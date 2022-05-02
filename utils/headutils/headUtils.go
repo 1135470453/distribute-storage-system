@@ -43,6 +43,8 @@ func CalculateHash(r io.Reader) string {
 	return base64.StdEncoding.EncodeToString(h.Sum(nil))
 }
 
+//头部为 range=first-格式
+//获取first作为偏移量
 func GetOffsetFromHeader(h http.Header) int64 {
 	byteRange := h.Get("range")
 	if len(byteRange) < 7 {

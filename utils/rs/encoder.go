@@ -6,14 +6,17 @@ import (
 	"log"
 )
 
+//用于管理编码器和对应的写入writer
 type encoder struct {
 	writers []io.Writer
 	enc     reedsolomon.Encoder
 	cache   []byte
 }
 
+//创建一个包括编码器和writer的ecoder
 func NewEncoder(writers []io.Writer) *encoder {
 	log.Println("NewEncoder start")
+	//生成一个有4个数据片,2个校验片的编码器
 	enc, _ := reedsolomon.New(DATA_SHARDS, PARITY_SHARDS)
 	log.Println("NewEncoder end")
 	return &encoder{writers, enc, nil}
@@ -40,7 +43,7 @@ func (e *encoder) Write(p []byte) (n int, err error) {
 	return len(p), nil
 }
 
-//将cache平分到四个盘中,
+//将cache生成RS六个分片后写入临时文件中
 func (e *encoder) Flush() {
 	log.Println("encoder flush start")
 	if len(e.cache) == 0 {
