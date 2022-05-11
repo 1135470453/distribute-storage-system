@@ -168,7 +168,7 @@ GET 10.0.2.1:8082/objects/filename
 
 头部可选，写则下载压缩格式，不写则下载不压缩格式
 
-头部{"key":"Accept_Encoding","value":"gzip"}
+头部{"key":"Accept_Encoding","value":"gzip"}，{"key":"range","value":"bytes=start-"}
 
 ***查看文件信息***
 
