@@ -4,7 +4,7 @@ go语言实现的简单分布式存储系统
 系统适用于Linux系统，部署后可以通过接口访问，后续有时间会开发一个客户端。
 因为采用的数据冗余技术问题，所以需要保证至少有六台存储设备。
 
-### 主要功能
+## 主要功能
 
 1. 文件上传:一次性上传所有文件和多次分段上传两种方式
 2. 文件下载：可以选择下载文件所有内容和部分内容，下载结果可以选择压缩版本或者未压缩版本
@@ -12,7 +12,7 @@ go语言实现的简单分布式存储系统
 4. 文件删除
 5. 文件位置查询：可以查看文件存储的物理存储设备的位置。
 
-### 配置环境
+## 配置环境
 
 1. 设置RabbitMQ服务器
 
@@ -93,7 +93,7 @@ POST IP:9200/metadata/objects
   "hash":"2oUvHeq7jQ27Va2y/usI1kSX4cETY9LuevZU9RT+Fuc="
 }
 ```
-### 搭建系统
+## 搭建系统
 系统分为两个部分，分别为处理用户请求的apiServer和负责数据存储的dataServer。
 在运行以上任意一个server时，需要首先在运行的服务器设置rabbitmq和elasticsearch的环境变量
 ```shell
@@ -119,7 +119,7 @@ dataServer负责数据存储业务，启动dataServer前需要首先创建存储
 LISTEN_ADDRESS=ip:port STORAGE_ROOT=/storage go run dataServer/dataServer.go
 ```
 
-### 使用
+## 使用
 通过向apiServer发送请求的方法使用，假设apiServer外网地址为10.0.2.1:8082
 
 通过该指令获取文件SHA-256编码，假设为hash
@@ -186,7 +186,7 @@ GET 10.0.2.1:8082/locate/hash
 
 DELETE 10.0.2.1:8082/objects/filename
 
-### 测试
+## 测试
 因为测试时只有一台服务器，所以使用ifconfig创建别名的方式来实现
 ```shell
 ifconfig thh0:1 10.0.1.1/16
