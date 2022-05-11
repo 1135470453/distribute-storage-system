@@ -84,7 +84,7 @@ POST IP:9200/metadata/objects
 ```
 需要先随意添加一个数据才可以使用
 
-POST http://101.43.155.248:9200/metadata/objects/test3_1?op_type=create
+例如： POST http://ip:9200/metadata/objects/test3_1?op_type=create
 ```json
 {
   "name":"test3",
