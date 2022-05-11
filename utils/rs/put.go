@@ -7,6 +7,7 @@ import (
 	"log"
 )
 
+//用于上传文件转换为RS纠删码分片后存储在对应的dataServer
 type RSPutStream struct {
 	*encoder
 }

@@ -66,12 +66,13 @@ func storeObject(r io.Reader, hash string, size int64) (int, error) {
 		log.Println("this is hash is exist")
 		return http.StatusOK, nil
 	}
+	//随机选择dataserver,并返回用于传数据的putStream
 	stream, e := putStream(url.PathEscape(hash), size)
 	if e != nil {
 		return http.StatusInternalServerError, e
 	}
 	//将r写入stream,返回stream内容用于之后的判断
-	//使用temStream.Write方法
+	//使用tempStream.Write方法
 	reader := io.TeeReader(r, stream)
 	d := headutils.CalculateHash(reader)
 	//如果hash错误,删除临时文件并报错

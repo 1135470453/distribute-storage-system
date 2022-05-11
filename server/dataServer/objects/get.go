@@ -14,6 +14,11 @@ import (
 	"strings"
 )
 
+/*
+收到请求格式:
+GET /objects/filename   filename为hash.i格式
+获取已经进行内容检验、被压缩的文件
+*/
 //将已经检验好的，并已经压缩的文件返回
 func get(w http.ResponseWriter, r *http.Request) {
 	log.Println("object get start")
